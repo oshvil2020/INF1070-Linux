@@ -45,9 +45,19 @@ familiarisez-vous avec le logiciel Tmux:
   `Ctrl-B d`.
 - Entrez la commande `tmux ls` pour lister les sessions existantes. Repérez les
   deux sessions que vous venez de créer.
+  ```
+   # tmux ls                                                                                  0: 1 windows (created Tue Mar 12 09:43:39 2024) 
+   1: 1 windows (created Tue Mar 12 10:14:34 2024) 
+   
+  ```
 - Chargez la première session que vous aviez créée avec `tmux a -t <nom>` où
   `<nom>` est remplacé par le nom de la session. Renommez-la session courante
   avec un nom plus facile à retenir et vérifiez le changement avec `Ctrl-B s`.
+  ```
+  tmux a -t 0 
+  # ou
+  tmux a -t 1
+  ```
 - Lancez le script [`ecrit`](./ecrit) disponible dans ce dépôt, détachez-vous
   de la session et déconnectez-vous du serveur `java`.
 - Reconnectez-vous sur Java et chargez à nouveau la session `tmux` dans
