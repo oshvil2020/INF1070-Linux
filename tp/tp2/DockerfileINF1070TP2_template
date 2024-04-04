@@ -1,0 +1,73 @@
+FROM ubuntu:22.04
+
+LABEL maintainer="tsheke_shele.johnny@uqam.ca"
+
+# EXPOSE 82 8080
+# EXPOSE 22
+
+
+ENV LANG fr_CA.UTF-8  
+ENV LANGUAGE fr_CA:fr  
+ENV LC_ALL fr_CA.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Montreal
+# ENV MOODLE_DOCKER_WEB_HOST=localhost
+# ENV MOODLE_DOCKER_DBTYPE=mariadb
+# ENV MOODLE_DOCKER_DBNAME=<codepermanent>
+# ENV MOODLE_DOCKER_DBUSER=<codepermanent> 
+# ENV MOODLE_DOCKER_DBPASS=<codems>
+# ENV MOODLE_DOCKER_DBCOLLATION=utf8mb4_bin
+# ENV MOODLE_DOCKER_WEB_PORT=4XYZ
+
+
+RUN apt-get update &&  apt-get install -y apt-utils\
+    init systemd curl git vim vim-common coreutils \
+    sed locales dpkg lsb-release cron tree cowsay\
+    psmisc time sudo openssl tzdata unzip wget
+
+# package pour reseau
+RUN apt-get update &&  apt-get install -y iptraf \
+    inetutils-ping iproute2
+
+# RUN apt-get update &&  apt-get install -y\
+# man manpages-fr 
+
+# Par defaut, utiliser le fuseau horaire (timezone) de montreal 
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN dpkg-reconfigure --frontend noninteractive tzdata 
+
+# Autoriser installation man pages. Necessaire pour le cours INF1070 UQAM
+RUN yes|unminimize
+
+# utiliser locale: francais Canada
+
+RUN sed -i -e 's/# fr_CA.UTF-8 UTF-8/fr_CA.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen fr_CA && update-locale LANG=fr_CA
+ 
+# Installer les packetages de la langue fr
+
+RUN apt-get update && apt-get install --reinstall -y \
+    language-pack-fr language-pack-fr-base 
+
+# Installation de man pages
+# Installer man pages en frencais -- necessaire pour UQAM 
+
+RUN apt-get update && apt-get install --reinstall -y\
+  man manpages-fr manpages-fr-extra manpages-fr-dev \
+  manpages-posix coreutils
+
+
+# Install dictionnaire fr
+
+RUN apt-get update && apt-get install -y \
+    hunspell-fr-classical wfrench
+
+
+# creer utilisateur '<codems>' avec mot de passe 'INF1070pass'
+
+RUN useradd -m -g adm -G sudo -d /home/<codems> -s /bin/bash -p `(echo "INF1070pass" |openssl passwd -1 -stdin)` <codems>
+
+RUN systemctl set-default multi-user.target
+#CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
+CMD ["/bin/bash", "-c", "tail -f /dev/null"]

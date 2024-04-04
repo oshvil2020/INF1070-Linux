@@ -1,0 +1,80 @@
+version: "2.3"
+name: "<codepermanent>"
+services:
+  <wpXYZ>:
+    container_name: "<webXYZ>"
+    hostname: "<webXYZ>"
+    init: true
+    image: <codepermanent>/<webXYZ>:tp2h24
+    build: 
+      context: .
+      dockerfile: DockerfileINF1070TP2_<codems>
+    depends_on:
+      - <masterXYZ>
+    ports:
+      - <4XYZ>:80
+      - <4UVW>:443
+    expose:
+      - 22
+    volumes:
+      - ./<webXYZ>:/var/www/html:rw
+      - ./<codems>/<webXYZ>:/home/<codems>
+    networks:
+          - "<ABCDnet>"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "12m"
+        max-file: "5"
+
+  <masterXYZ>:
+    container_name: "<dbXYZ>"
+    hostname: "<masterXYZ>"
+    init: true
+    image: <codepermanent>/<dbXYZ>:tp2h24
+    build: 
+      context: .
+      dockerfile: DockerfileINF1070TP2_<codems>
+    volumes:
+      - ./<masterXYZ>/data:/var/lib/mysql
+      - ./<masterXYZ>/conf:/etc/mysql
+      - ./<masterXYZ>/<tmprepXYZ>:/<tmprepXYZ>
+      - ./<codems>/<dbXYZ>:/home/<codems>
+    expose:
+      - 3306
+      - 22
+    networks:
+          - "<ABCDnet>"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "12m"
+        max-file: "5"
+  <slaveUVW>:
+    container_name: "<dbUVW>"
+    hostname: "<slaveUVW>"
+    init: true
+    image: <codepermanent>/<dbUVW>:tp2h24
+    build: 
+      context: .
+      dockerfile: DockerfileINF1070TP2_<codems>
+    volumes:
+      - ./<slaveUVW>/data:/var/lib/mysql
+      - ./<slaveUVW>/conf:/etc/mysql
+      - ./<slaveUVW>/<tmprepUVW>:/<tmprepUVW>
+      - ./<codems>/<dbUVW>:/home/<codems>
+    expose:
+      - 3306
+      - 22
+    networks:
+          - "<ABCDnet>"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "12m"
+        max-file: "5"
+
+networks:
+  <ABCDnet>:
+    external: true
+    enable_ipv6: true
